@@ -24,7 +24,7 @@ jobs:
       - name: Generate language statistics
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: gustavbeier
+          GITHUB_USERNAME: ${{ github.repository_owner }}
         run: python scripts/generate_languages.py
 
       - name: Commit changes
