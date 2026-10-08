@@ -9,7 +9,13 @@ from pathlib import Path
 USERNAME = os.environ["GITHUB_USERNAME"]
 TOKEN = os.environ.get("GITHUB_TOKEN")
 
-OUTPUT = Path("assets/languages.svg")
+OUTPUT_DIR = Path("assets")
+
+# Cor do texto para cada tema do GitHub.
+THEMES = {
+    "light": "#1f2328",
+    "dark": "#e6edf3",
+}
 
 MAX_LANGUAGES = 8
 
@@ -120,7 +126,7 @@ def escape_svg(text):
     )
 
 
-def generate_svg(languages):
+def generate_svg(languages, text_color):
     total = sum(value for _, value in languages)
 
     if total == 0:
@@ -154,6 +160,55 @@ def generate_svg(languages):
         "Ruby": "#701516",
         "Swift": "#F05138",
         "Vue": "#41b883",
+        "Svelte": "#ff3e00",
+        "Astro": "#ff5a03",
+        "SCSS": "#c6538c",
+        "Sass": "#a53b70",
+        "Less": "#1d365d",
+        "MDX": "#fcb32c",
+        "EJS": "#a91e50",
+        "Handlebars": "#f7931e",
+        "Pug": "#a86454",
+        "Jinja": "#a52a22",
+        "Blade": "#f7523f",
+        "Twig": "#c1d026",
+        "TeX": "#3D6117",
+        "Typst": "#239dad",
+        "Markdown": "#083fa1",
+        "R": "#198CE7",
+        "Julia": "#a270ba",
+        "MATLAB": "#e16737",
+        "Fortran": "#4d41b1",
+        "Lua": "#000080",
+        "Perl": "#0298c3",
+        "Scala": "#c22d40",
+        "Groovy": "#4298b8",
+        "Clojure": "#db5855",
+        "Haskell": "#5e5086",
+        "Elixir": "#6e4a7e",
+        "Erlang": "#B83998",
+        "Elm": "#60B5CC",
+        "OCaml": "#ef7a08",
+        "F#": "#b845fc",
+        "Zig": "#ec915c",
+        "Nim": "#ffc200",
+        "Objective-C": "#438eff",
+        "Assembly": "#6E4C13",
+        "Cuda": "#3A4E3A",
+        "GLSL": "#5686a5",
+        "Solidity": "#AA6746",
+        "PowerShell": "#012456",
+        "Batchfile": "#C1F12E",
+        "Vim Script": "#199f4b",
+        "Emacs Lisp": "#c065db",
+        "Dockerfile": "#384d54",
+        "Makefile": "#427819",
+        "CMake": "#DA3434",
+        "Nix": "#7e7eff",
+        "HCL": "#844FBA",
+        "PLpgSQL": "#336790",
+        "TSQL": "#e38c00",
+        "Procfile": "#3B2F63",
         "Other": "#8b949e",
     }
 
@@ -163,7 +218,7 @@ def generate_svg(languages):
         f'viewBox="0 0 {width} {height}">',
         "<style>",
         "text { font-family: -apple-system, BlinkMacSystemFont, "
-        "'Segoe UI', sans-serif; }",
+        f"'Segoe UI', sans-serif; fill: {text_color}; }}",
         ".title { font-size: 16px; font-weight: 600; }",
         ".label { font-size: 12px; }",
         ".percent { font-size: 12px; opacity: .65; }",
@@ -233,13 +288,16 @@ def main():
     languages = collect_languages(repositories)
     languages = normalize_languages(languages)
 
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(
-        generate_svg(languages),
-        encoding="utf-8",
-    )
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    print(f"Generated {OUTPUT}")
+    for theme, text_color in THEMES.items():
+        output = OUTPUT_DIR / f"languages-{theme}.svg"
+        output.write_text(
+            generate_svg(languages, text_color),
+            encoding="utf-8",
+        )
+
+        print(f"Generated {output}")
 
 
 if __name__ == "__main__":

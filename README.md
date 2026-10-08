@@ -17,6 +17,9 @@ Frontend engineer focused on React + TypeScript, building scalable UI systems an
 
 ### Languages
 
-![Languages](./assets/languages.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/languages-dark.svg">
+  <img alt="Languages" src="./assets/languages-light.svg">
+</picture>
 
 🌐 [gustavbeier.xyz](https://gustavbeier.xyz)
