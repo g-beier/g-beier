@@ -17,7 +17,46 @@ THEMES = {
     "dark": "#e6edf3",
 }
 
-MAX_LANGUAGES = 8
+# Categoria de cada linguagem, por finalidade. Linguagens que não
+# aparecem aqui entram em "Other".
+CATEGORIES = {
+    "Web": {
+        "TypeScript", "JavaScript", "HTML", "CSS", "SCSS", "Sass", "Less",
+        "Vue", "Svelte", "Astro", "EJS", "Handlebars", "Pug", "Jinja",
+        "Blade", "Twig", "PHP", "Ruby", "Elm",
+    },
+    "Automation": {
+        "Python", "Shell", "PowerShell", "Batchfile", "Perl", "Lua",
+        "Dockerfile", "Makefile", "CMake", "Nix", "HCL", "Procfile",
+        "Vim Script", "Emacs Lisp",
+    },
+    "Docs": {
+        "TeX", "Typst", "Markdown", "MDX",
+    },
+    "Data & Math": {
+        "R", "Julia", "MATLAB", "Fortran", "SQL", "PLpgSQL", "TSQL",
+    },
+    "Systems": {
+        "C", "C++", "Rust", "Go", "Zig", "Nim", "Assembly", "Cuda",
+        "GLSL", "Objective-C",
+    },
+    "Apps": {
+        "Java", "Kotlin", "Swift", "Dart", "C#", "Scala", "Groovy",
+        "Elixir", "Erlang", "Clojure",
+    },
+}
+
+# Cores escolhidas para ter contraste nos temas claro e escuro.
+CATEGORY_COLORS = {
+    "Web": "#3178c6",
+    "Automation": "#f0883e",
+    "Docs": "#2ea043",
+    "Data & Math": "#a371f7",
+    "Systems": "#db61a2",
+    "Apps": "#39c5cf",
+    "Other": "#8b949e",
+}
+
 
 # Linguagens que normalmente não representam código-fonte relevante
 # para este tipo de estatística.
@@ -100,20 +139,28 @@ def collect_languages(repositories):
     return languages
 
 
-def normalize_languages(languages):
-    ordered = sorted(
-        languages.items(),
-        key=lambda item: item[1],
-        reverse=True,
+def group_by_category(languages):
+    categories = {}
+
+    for language, bytes_count in languages.items():
+        category = next(
+            (
+                name
+                for name, members in CATEGORIES.items()
+                if language in members
+            ),
+            "Other",
+        )
+
+        categories[category] = (
+            categories.get(category, 0) + bytes_count
+        )
+
+    # Maiores primeiro, "Other" sempre por último.
+    return sorted(
+        categories.items(),
+        key=lambda item: (item[0] == "Other", -item[1]),
     )
-
-    if len(ordered) <= MAX_LANGUAGES:
-        return ordered
-
-    top = ordered[:MAX_LANGUAGES]
-    other = sum(value for _, value in ordered[MAX_LANGUAGES:])
-
-    return top + [("Other", other)]
 
 
 def escape_svg(text):
@@ -126,91 +173,26 @@ def escape_svg(text):
     )
 
 
-def generate_svg(languages, text_color):
-    total = sum(value for _, value in languages)
+def generate_svg(categories, text_color):
+    total = sum(value for _, value in categories)
 
     if total == 0:
         raise RuntimeError("No language data found.")
 
+    # Layout: legenda em grade, altura ajustada ao número de linhas.
+    columns = 4
+    column_width = 190
+    row_height = 32
+    start_y = 50
+    rows = -(-len(categories) // columns)
+
     width = 760
-    height = 170
+    height = start_y + (rows - 1) * row_height + 23
 
-    bar_x = 20
-    bar_y = 42
-    bar_width = 720
+    bar_x = 0
+    bar_y = 10
+    bar_width = width
     bar_height = 12
-
-    # GitHub-like language colors.
-    colors = {
-        "TypeScript": "#3178c6",
-        "JavaScript": "#f1e05a",
-        "Java": "#b07219",
-        "Python": "#3572A5",
-        "CSS": "#563d7c",
-        "HTML": "#e34c26",
-        "Shell": "#89e051",
-        "C": "#555555",
-        "C++": "#f34b7d",
-        "C#": "#178600",
-        "Go": "#00ADD8",
-        "Rust": "#dea584",
-        "PHP": "#4F5D95",
-        "Kotlin": "#A97BFF",
-        "Dart": "#00B4AB",
-        "Ruby": "#701516",
-        "Swift": "#F05138",
-        "Vue": "#41b883",
-        "Svelte": "#ff3e00",
-        "Astro": "#ff5a03",
-        "SCSS": "#c6538c",
-        "Sass": "#a53b70",
-        "Less": "#1d365d",
-        "MDX": "#fcb32c",
-        "EJS": "#a91e50",
-        "Handlebars": "#f7931e",
-        "Pug": "#a86454",
-        "Jinja": "#a52a22",
-        "Blade": "#f7523f",
-        "Twig": "#c1d026",
-        "TeX": "#3D6117",
-        "Typst": "#239dad",
-        "Markdown": "#083fa1",
-        "R": "#198CE7",
-        "Julia": "#a270ba",
-        "MATLAB": "#e16737",
-        "Fortran": "#4d41b1",
-        "Lua": "#000080",
-        "Perl": "#0298c3",
-        "Scala": "#c22d40",
-        "Groovy": "#4298b8",
-        "Clojure": "#db5855",
-        "Haskell": "#5e5086",
-        "Elixir": "#6e4a7e",
-        "Erlang": "#B83998",
-        "Elm": "#60B5CC",
-        "OCaml": "#ef7a08",
-        "F#": "#b845fc",
-        "Zig": "#ec915c",
-        "Nim": "#ffc200",
-        "Objective-C": "#438eff",
-        "Assembly": "#6E4C13",
-        "Cuda": "#3A4E3A",
-        "GLSL": "#5686a5",
-        "Solidity": "#AA6746",
-        "PowerShell": "#012456",
-        "Batchfile": "#C1F12E",
-        "Vim Script": "#199f4b",
-        "Emacs Lisp": "#c065db",
-        "Dockerfile": "#384d54",
-        "Makefile": "#427819",
-        "CMake": "#DA3434",
-        "Nix": "#7e7eff",
-        "HCL": "#844FBA",
-        "PLpgSQL": "#336790",
-        "TSQL": "#e38c00",
-        "Procfile": "#3B2F63",
-        "Other": "#8b949e",
-    }
 
     svg = [
         f'<svg xmlns="http://www.w3.org/2000/svg" '
@@ -219,22 +201,20 @@ def generate_svg(languages, text_color):
         "<style>",
         "text { font-family: -apple-system, BlinkMacSystemFont, "
         f"'Segoe UI', sans-serif; fill: {text_color}; }}",
-        ".title { font-size: 16px; font-weight: 600; }",
         ".label { font-size: 12px; }",
         ".percent { font-size: 12px; opacity: .65; }",
         "</style>",
         '<rect width="100%" height="100%" fill="transparent"/>',
-        '<text x="20" y="24" class="title">Languages</text>',
     ]
 
-    # Language bar
+    # Category bar
     current_x = bar_x
 
-    for language, value in languages:
+    for category, value in categories:
         percentage = value / total
         segment_width = bar_width * percentage
 
-        color = colors.get(language, "#8b949e")
+        color = CATEGORY_COLORS[category]
 
         svg.append(
             f'<rect x="{current_x:.2f}" y="{bar_y}" '
@@ -245,21 +225,17 @@ def generate_svg(languages, text_color):
         current_x += segment_width
 
     # Legend
-    columns = 4
-    column_width = 180
-    row_height = 32
-    start_y = 82
-
-    for index, (language, value) in enumerate(languages):
+    for index, (category, value) in enumerate(categories):
         percentage = value / total * 100
 
         column = index % columns
         row = index // columns
 
-        x = 20 + column * column_width
+        # Círculo encostado na borda esquerda (cx = raio).
+        x = 5 + column * column_width
         y = start_y + row * row_height
 
-        color = colors.get(language, "#8b949e")
+        color = CATEGORY_COLORS[category]
 
         svg.append(
             f'<circle cx="{x}" cy="{y - 4}" r="5" fill="{color}"/>'
@@ -267,7 +243,7 @@ def generate_svg(languages, text_color):
 
         svg.append(
             f'<text x="{x + 12}" y="{y}" class="label">'
-            f'{escape_svg(language)}</text>'
+            f'{escape_svg(category)}</text>'
         )
 
         svg.append(
@@ -286,14 +262,14 @@ def main():
     print(f"Found {len(repositories)} repositories.")
 
     languages = collect_languages(repositories)
-    languages = normalize_languages(languages)
+    categories = group_by_category(languages)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     for theme, text_color in THEMES.items():
         output = OUTPUT_DIR / f"languages-{theme}.svg"
         output.write_text(
-            generate_svg(languages, text_color),
+            generate_svg(categories, text_color),
             encoding="utf-8",
         )
 
