@@ -5,28 +5,32 @@ text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; f
 .percent { font-size: 12px; opacity: .65; }
 </style>
 <rect width="100%" height="100%" fill="transparent"/>
-<rect x="0.00" y="10" width="576.61" height="12" fill="#3178c6"/>
-<rect x="576.61" y="10" width="83.56" height="12" fill="#a371f7"/>
-<rect x="660.18" y="10" width="80.31" height="12" fill="#2ea043"/>
-<rect x="740.49" y="10" width="10.93" height="12" fill="#db61a2"/>
-<rect x="751.42" y="10" width="7.24" height="12" fill="#f0883e"/>
-<rect x="758.66" y="10" width="1.34" height="12" fill="#39c5cf"/>
+<rect x="0.00" y="10" width="588.90" height="12" fill="#3178c6"/>
+<rect x="588.90" y="10" width="84.04" height="12" fill="#a371f7"/>
+<rect x="672.94" y="10" width="67.07" height="12" fill="#2ea043"/>
+<rect x="740.00" y="10" width="9.13" height="12" fill="#db61a2"/>
+<rect x="749.13" y="10" width="6.65" height="12" fill="#f0883e"/>
+<rect x="755.78" y="10" width="1.12" height="12" fill="#39c5cf"/>
+<rect x="756.90" y="10" width="3.10" height="12" fill="#8b949e"/>
 <circle cx="5" cy="46" r="5" fill="#3178c6"/>
 <text x="17" y="50" class="label">Web</text>
-<text x="17" y="65" class="percent">75.9%</text>
+<text x="17" y="65" class="percent">77.5%</text>
 <circle cx="195" cy="46" r="5" fill="#a371f7"/>
 <text x="207" y="50" class="label">Data &amp; Math</text>
-<text x="207" y="65" class="percent">11.0%</text>
+<text x="207" y="65" class="percent">11.1%</text>
 <circle cx="385" cy="46" r="5" fill="#2ea043"/>
 <text x="397" y="50" class="label">Docs</text>
-<text x="397" y="65" class="percent">10.6%</text>
+<text x="397" y="65" class="percent">8.8%</text>
 <circle cx="575" cy="46" r="5" fill="#db61a2"/>
 <text x="587" y="50" class="label">Systems</text>
-<text x="587" y="65" class="percent">1.4%</text>
+<text x="587" y="65" class="percent">1.2%</text>
 <circle cx="5" cy="78" r="5" fill="#f0883e"/>
 <text x="17" y="82" class="label">Automation</text>
-<text x="17" y="97" class="percent">1.0%</text>
+<text x="17" y="97" class="percent">0.9%</text>
 <circle cx="195" cy="78" r="5" fill="#39c5cf"/>
 <text x="207" y="82" class="label">Apps</text>
-<text x="207" y="97" class="percent">0.2%</text>
+<text x="207" y="97" class="percent">0.1%</text>
+<circle cx="385" cy="78" r="5" fill="#8b949e"/>
+<text x="397" y="82" class="label">Other</text>
+<text x="397" y="97" class="percent">0.4%</text>
 </svg>
